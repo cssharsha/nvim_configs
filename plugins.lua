@@ -19,6 +19,21 @@ local plugins = {
     requires = { 'nvim-tree/nvim-web-devicons' },
   },
   {
+    "folke/noice.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify"
+    },
+    config = function()
+      require("noice").setup({
+        cmdline = {
+          enabled = true,
+          view = "cmdline_popup", -- or "cmdline" for default
+        },
+      })
+    end
+  },
+  {
     "nvim-tree/nvim-tree.lua",
     lazy = false,  -- Important: Load immediately for tmux integration
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
@@ -53,7 +68,15 @@ local plugins = {
           return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
         end
 
-        -- Custom mappings
+        -- File operations
+        vim.keymap.set('n', 'a', api.fs.create, opts('Create'))
+        vim.keymap.set('n', 'd', api.fs.remove, opts('Delete'))
+        vim.keymap.set('n', 'r', api.fs.rename, opts('Rename'))
+        vim.keymap.set('n', 'x', api.fs.cut, opts('Cut'))
+        vim.keymap.set('n', 'c', api.fs.copy.node, opts('Copy'))
+        vim.keymap.set('n', 'p', api.fs.paste, opts('Paste'))
+
+        -- Existing custom mappings
         vim.keymap.set('n', '<CR>', api.node.open.edit, opts('Open'))
         vim.keymap.set('n', 'l', api.node.open.edit, opts('Open'))
         vim.keymap.set('n', 'sv', api.node.open.vertical, opts('Open: Vertical Split'))
