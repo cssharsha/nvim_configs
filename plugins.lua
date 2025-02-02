@@ -15,23 +15,72 @@ local plugins = {
     },
   },
   {
+    "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", "CmdlineEnter" },
+    dependencies = {
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+    },
+    config = function()
+      local cmp = require("cmp")
+      
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'buffer' },
+          { name = 'path' },
+        }),
+      })
+
+      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' },
+          { name = 'cmdline' }
+        })
+      })
+    end,
+  },
+  {
     'goolord/alpha-nvim',
     requires = { 'nvim-tree/nvim-web-devicons' },
   },
   {
     "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = function ()
+      return require("custom.configs.noice").setup()
+    end,
     dependencies = {
       "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify"
+      "rcarriga/nvim-notify",
+      "hrsh7th/nvim-cmp",
     },
-    config = function()
-      require("noice").setup({
-        cmdline = {
-          enabled = true,
-          view = "cmdline_popup", -- or "cmdline" for default
-        },
-      })
-    end
   },
   {
     "nvim-tree/nvim-tree.lua",
@@ -163,13 +212,13 @@ local plugins = {
     lazy = false,
     version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
     opts = {
-      provider = "ollama",
-      vendors = {
-        ollama = function ()
-          return require("custom.configs.avante")
-        end,
-      },
-      default_provider = "ollama",
+      -- provider = "ollama",
+      -- vendors = {
+      --   ollama = function ()
+      --     return require("custom.configs.avante")
+      --   end,
+      -- },
+      -- default_provider = "ollama",
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",

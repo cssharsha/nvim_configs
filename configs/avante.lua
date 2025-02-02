@@ -1,5 +1,5 @@
--- https://github.com/yetone/avante.nvim/wiki/Custom-providers#ollama
--- https://github.com/yetone/avante.nvim/issues/1067#issuecomment-2585550870
+--- https://github.com/yetone/avante.nvim/wiki/Custom-providers#ollama
+--- https://github.com/yetone/avante.nvim/issues/1067#issuecomment-2585550870
 -- Ollama API Documentation https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-completion
 local role_map = {
 	user = "user",
